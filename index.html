@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sorteio de Times de Futebol</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #container {
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .team-column {
+            width: 48%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-image: url('campo.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+        }
+
+        .team-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .team-item {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            cursor: move;
+        }
+
+        .player-name {
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+
+        .player-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid white;
+        }
+
+        .player-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-footer {
+            margin-top: 20px;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+       
+
+       
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h2>Sortear Times</h2>
+        <button onclick="drawTeams()">Sortear Times</button>
+        <div id="result"></div>
+
+        <div class="team-container">
+            <div class="team-column" id="team1-column" ondrop="drop(event)" ondragover="allowDrop(event)">
+            </div>
+            <div class="team-column" id="team2-column" ondrop="drop(event)" ondragover="allowDrop(event)">
+            </div>
+        </div>
+    </div>
+    <script>
+        const players = [
+            { id: "player1", name: "Elton", image: "./elton.jpg" },
+            { id: "player2", name: "Cleber", image: "cleber.jpg" },
+            { id: "player3", name: "Ricardo", image: "ricardo.jpg" },
+            { id: "player4", name: "Bruno Piva", image: "bruno_piva.jpg" },
+            { id: "player5", name: "Bruno M", image: "bruno_eugenio.jpg" },
+            { id: "player6", name: "Rafael Ag", image: "rafael_ag.jpg" },
+            { id: "player7", name: "Rafael", image: "rafael.jpg" },
+            { id: "player8", name: "Matheus", image: "matheus.jpg" },
+            { id: "player9", name: "Danilo", image: "danilo.jpg" },
+            { id: "player10", name: "Paulinho", image: "paulinho.jpg" },
+            { id: "player11", name: "Paulo Salter", image: "paulo_salter.jpg" },
+            { id: "player12", name: "Leandro", image: "leandro.jpg" },
+            { id: "player13", name: "Welington", image: "welington.jpg" },
+            { id: "player14", name: "Marco", image: "marco.jpg" },
+            { id: "player15", name: "Claudio", image: "claudio.jpg" },
+            { id: "player16", name: "Joao Paulo", image: "joao_paulo.jpg" },
+            { id: "player17", name: "Fernando", image: "fernando.jpg" },
+        ];
+
+        function drawTeams() {
+            if (players.length < 12) {
+                alert('Você precisa ter pelo menos 12 jogadores para formar dois times.');
+                return;
+            }
+
+            const shuffledPlayers = shuffleArray(players);
+            const team1 = shuffledPlayers.slice(0, 6);
+            const team2 = shuffledPlayers.slice(6, 12);
+
+            displayTeam('team1-column', team1);
+            displayTeam('team2-column', team2);
+
+            const result = document.getElementById('result');
+            result.textContent = `Times sorteados com sucesso!`;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function displayTeam(columnId, team) {
+            const teamColumn = document.getElementById(columnId);
+            teamColumn.innerHTML = '';
+
+            const teamList = document.createElement('ul');
+            teamList.className = 'team-list';
+            team.forEach(player => {
+                const playerItem = document.createElement('li');
+                playerItem.className = 'team-item';
+                playerItem.draggable = true;
+                playerItem.id = player.id;
+
+                const playerName = document.createElement('div');
+                playerName.className = 'player-name';
+                playerName.textContent = player.name;
+
+                const playerImage = document.createElement('div');
+                playerImage.className = 'player-image';
+                playerImage.innerHTML = `<img src="${player.image}" alt="${player.name}">`;
+
+                playerItem.appendChild(playerImage);
+                playerItem.appendChild(playerName);
+                teamList.appendChild(playerItem);
+            });
+
+            teamColumn.appendChild(teamList);
+
+            const teamFooter = document.createElement('div');
+            teamFooter.className = 'team-footer';
+            teamColumn.appendChild(teamFooter);
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const playerId = event.dataTransfer.getData("playerId");
+            const playerElement = document.getElementById(playerId);
+            event.target.appendChild(playerElement);
+        }
+
+        const playerItems = document.querySelectorAll('.team-item');
+        playerItems.forEach(playerItem => {
+            playerItem.addEventListener('dragstart', (event) => {
+                event.dataTransfer.setData("playerId", event.target.id);
+            });
+        });
+    </script>
+</body>
+
+</html>
